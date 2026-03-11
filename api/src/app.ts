@@ -1,0 +1,29 @@
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import apiRouter from './routers/api-router';
+
+//import path from 'path';
+
+
+const app = express();
+app.use(morgan('tiny'));
+app.use(cors());
+app.use(helmet());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from the 'public' directory
+//app.use(express.static(path.join(__dirname, '/public')));
+//app.use(express.static('public'));
+//app.use(express.urlencoded({ extended: true }));
+
+// auth & instructor
+app.use('/api', apiRouter);
+
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  res.status(500).send(error.message);
+})
+
+export default app;

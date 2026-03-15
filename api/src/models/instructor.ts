@@ -1,7 +1,8 @@
 export default class Instructor {
+    _id?: string;
+    userId:string;
     firstname: string;
-    lastname: string;
-    email: string;
+    lastname: string;    
     ddd: string;
     phone: string;
     cpf: string;
@@ -18,7 +19,7 @@ export default class Instructor {
     callByMicroregion: boolean;
     agree: boolean;
 
-    constructor(firstname: string, lastname: string, email: string, ddd: string, phone: string, cpf: string, cnpj:string, status: string, category: string, vehicle: string, description: string,
+    constructor(userId:string, firstname: string, lastname: string, email: string, password: string, ddd: string, phone: string, cpf: string, cnpj: string, status: string, category: string, vehicle: string, description: string,
         state: string,
         stateId: number,
         city: string,
@@ -27,9 +28,9 @@ export default class Instructor {
         callByMicroregion: boolean,
         agree: boolean
     ) {
+        this.userId = userId;
         this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
+        this.lastname = lastname;        
         this.ddd = ddd;
         this.phone = phone;
         this.cpf = cpf;

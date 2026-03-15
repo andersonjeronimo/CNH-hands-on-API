@@ -10,8 +10,8 @@ export enum Category {
     AB = "A e B"
 }
 
-export enum Vehicle { 
-    Proprio = "Próprio",
-    Aluno = "Terceiros",
-    Ambos = "Próprio / Terceiros"
+export enum Vehicle {    
+    Aluno = "Aluno",
+    Instrutor = "Instrutor",
+    Ambos = "Combinar"
 }

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { Document, Filter, MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
 //Webhook Mercado Pago
@@ -9,7 +9,7 @@ import { Status } from "../utils/utils";
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
-const collectionName = `${process.env.COLLECTION_NAME}`;
+const collectionName = `${process.env.COLLECTION_INSTRUCTORS_NAME}`;
 
 //Teste de conexão++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -37,6 +37,45 @@ run().catch(console.dir);
 
 //https://www.mongodb.com/pt-br/docs/drivers/node/current/crud/insert/
 
+async function insertInstructor(document: {}) {
+    let result;
+    const client = new MongoClient(uri, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+    try {
+        const database = client.db(dbName);
+        const customers = database.collection(collectionName);
+        result = await customers.insertOne(document);
+    } finally {
+        await client.close();
+    }
+    return result.insertedId;
+}
+
+async function auth(email: String) {
+    let document;
+    const client = new MongoClient(uri, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+    try {
+        const database = client.db(dbName);
+        const collection = database.collection(collectionName);        
+        document = await collection.findOne({ email: { $eq: email } });
+
+    } finally {
+        await client.close();
+    }
+    return document;
+}
+
 async function findInstructorById(id: string) {
     let document;
     const client = new MongoClient(uri, {
@@ -50,6 +89,44 @@ async function findInstructorById(id: string) {
         const database = client.db(dbName);
         const collection = database.collection(collectionName);
         document = await collection.findOne({ _id: new ObjectId(id) });
+    } finally {
+        await client.close();
+    }
+    return document;
+}
+
+async function findInstructorByUserId(_id: string) {
+    let document;
+    const client = new MongoClient(uri, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+    try {
+        const database = client.db(dbName);
+        const collection = database.collection(collectionName);
+        document = await collection.findOne({ userId: { $eq: _id } });
+    } finally {
+        await client.close();
+    }
+    return document;
+}
+
+async function findInstructorByEmail(_email: string) {
+    let document;
+    const client = new MongoClient(uri, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+    try {
+        const database = client.db(dbName);
+        const collection = database.collection(collectionName);
+        document = await collection.findOne({ email: { $eq: _email } });
     } finally {
         await client.close();
     }
@@ -146,25 +223,6 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
     return documents;
 }
 
-async function insertInstructor(document: {}) {
-    let result;
-    const client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
-    try {
-        const database = client.db(dbName);
-        const customers = database.collection(collectionName);
-        result = await customers.insertOne(document);
-    } finally {
-        await client.close();
-    }
-    return result.insertedId;
-}
-
 //Webhook Mercado Pago+++++++++++++++++++++++++++++++++++++++++++++
 async function updateInstructorStatus(cpf: string, event: string) {
     /* Eventos:
@@ -225,11 +283,14 @@ async function updateInstructorStatus(cpf: string, event: string) {
 //Webhook Mercado Pago+++++++++++++++++++++++++++++++++++++++++++++
 
 export default {
+    insertInstructor,
+    auth,
     findInstructorById,
+    findInstructorByUserId,
+    findInstructorByEmail,
     findInstructorByCPF,
     findInstructorByCNPJ,
     findInstructor,
     findInstructors,
-    insertInstructor,
     updateInstructorStatus
 }

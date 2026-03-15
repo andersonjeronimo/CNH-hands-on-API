@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb';
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
-const collectionName = 'prices';//`${process.env.COLLECTION_NAME}`;
+const collectionName = `${process.env.COLLECTION_PRICES_NAME}`;
 
 //Teste de conexão++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version

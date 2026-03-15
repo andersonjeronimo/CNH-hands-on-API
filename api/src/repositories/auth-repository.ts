@@ -4,9 +4,11 @@ dotenv.config();
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
+import User from 'src/models/user';
+
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
-const collectionName = `${process.env.COLLECTION_NAME}`;
+const collectionName = `${process.env.COLLECTION_USERS_NAME}`;
 
 //Teste de conexão++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -34,7 +36,26 @@ async function run() {
 
 //https://www.mongodb.com/pt-br/docs/drivers/node/current/crud/insert/
 
-async function auth(username: string, password: string) {
+async function create(user: User) {
+    let result;
+    const client = new MongoClient(uri, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+    try {
+        const database = client.db(dbName);
+        const user_collection = database.collection(collectionName);
+        result = await user_collection.insertOne(user);
+    } finally {
+        await client.close();
+    }
+    return result.insertedId;
+}
+
+async function auth(email:string) {
     let document;
     const client = new MongoClient(uri, {
         serverApi: {
@@ -45,12 +66,13 @@ async function auth(username: string, password: string) {
     });
     try {
         const database = client.db(dbName);
-        const collection = database.collection(collectionName);
-        document = await collection.findOne({ _id: new ObjectId(password) });
+        const collection = database.collection(collectionName);        
+        document = await collection.findOne({ email: { $eq: email } });
+
     } finally {
         await client.close();
     }
     return document;
 }
 
-export default { auth }
+export default { create, auth }

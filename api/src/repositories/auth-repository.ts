@@ -55,7 +55,7 @@ async function create(user: User) {
     return result.insertedId;
 }
 
-async function auth(email:string) {
+async function auth(email: string) {
     let document;
     const client = new MongoClient(uri, {
         serverApi: {
@@ -66,7 +66,7 @@ async function auth(email:string) {
     });
     try {
         const database = client.db(dbName);
-        const collection = database.collection(collectionName);        
+        const collection = database.collection(collectionName);
         document = await collection.findOne({ email: { $eq: email } });
 
     } finally {
@@ -75,4 +75,23 @@ async function auth(email:string) {
     return document;
 }
 
-export default { create, auth }
+async function findUserById(id: string) {
+    let document;
+    const client = new MongoClient(uri, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+    try {
+        const database = client.db(dbName);
+        const collection = database.collection(collectionName);
+        document = await collection.findOne({ _id: new ObjectId(id) });
+    } finally {
+        await client.close();
+    }
+    return document;
+}
+
+export default { create, auth, findUserById }

@@ -12,6 +12,7 @@ router.post('/price', priceController.setPrice);
 router.post('/webhook/:event', instructorController.updateInstructorStatus);
 /*login*/
 router.post('/user', authController.create);
+router.get('/user/:id', authController.findUserById);
 router.post('/auth', authController.auth);
 /*instructors*/
 router.post('/instructor', instructorController.insertInstructor);

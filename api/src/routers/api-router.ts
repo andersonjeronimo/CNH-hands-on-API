@@ -14,6 +14,7 @@ router.post('/webhook/:event', instructorController.updateInstructorStatus);
 router.post('/user', authController.create);
 router.get('/user/:id', authController.findUserById);
 router.post('/auth', authController.auth);
+
 /*instructors*/
 router.post('/instructor', instructorController.insertInstructor);
 router.get('/instructor/:id', instructorController.findInstructorById);

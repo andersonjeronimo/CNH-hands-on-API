@@ -2,11 +2,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { Request, Response, NextFunction } from 'express';
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 import User from 'src/models/user';
+
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import authRepository from '../repositories/auth-repository';
+
+type JwtPayload = {
+    id: string
+}
 
 async function create(req: Request, res: Response, next: NextFunction) {
     const user = req.body as User;
@@ -42,7 +47,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
             res.sendStatus(400);
         }
 
-        const token = jwt.sign({ id: _authUser._id }, `${process.env.JWT_SECRET}`, { expiresIn: '8h' });
+        const token = jwt.sign({ id: _authUser._id }, `${process.env.JWT_SECRET}`, { expiresIn: Number(process.env.JWT_EXPIRES) });
 
         const { password: _, ...authUser } = _authUser;
 

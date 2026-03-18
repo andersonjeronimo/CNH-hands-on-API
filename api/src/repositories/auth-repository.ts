@@ -75,7 +75,7 @@ async function auth(email: string) {
     return document;
 }
 
-async function findUserById(id: string) {
+async function findUser(id: string) {
     let document;
     const client = new MongoClient(uri, {
         serverApi: {
@@ -94,4 +94,4 @@ async function findUserById(id: string) {
     return document;
 }
 
-export default { create, auth, findUserById }
+export default { create, auth, findUser }

@@ -59,12 +59,11 @@ async function findInstructors(req: Request, res: Response, next: NextFunction) 
     const { category, vehicle, stateId, microregionId, callByMicroregion, cityId } = query;
     const result = await InstructorRepository.findInstructors(category, vehicle, stateId, cityId, microregionId, callByMicroregion, skip, pageSize);
     res.status(200).json(result);
-
 }
 
 
 export default {
-    insertInstructor,    
+    insertInstructor,
     updateInstructorStatus,
     findInstructorById,
     findInstructorByUserId,

@@ -26,20 +26,15 @@ async function create(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-async function findUserById(req: Request, res: Response, next: NextFunction) {
+async function findUser(req: Request, res: Response, next: NextFunction) {
     const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-    const _user = await authRepository.findUserById(id);
-    if (_user) {
-        const { password: _, ...user } = _user;
-        res.status(200).json(user);
-    } else {
-        res.sendStatus(404);
-    }
-
+    const result = await authRepository.findUser(id);
+    res.status(200).json(result);
 }
 
+//login
 async function auth(req: Request, res: Response, next: NextFunction) {
-    const user = req.body as User;
+    const user = req.body as User;    
     const _authUser = await authRepository.auth(user.email);
     if (_authUser) {
         const verifyPass = await bcrypt.compare(user.password, _authUser.password);
@@ -61,4 +56,4 @@ async function auth(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export default { create, auth, findUserById }
+export default { create, auth, findUser }

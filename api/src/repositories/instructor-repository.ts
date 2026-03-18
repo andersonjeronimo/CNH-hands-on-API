@@ -5,7 +5,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
 //Webhook Mercado Pago
-import { Status } from "../utils/utils";
+import { Status, Vehicle } from "../utils/utils";
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
@@ -67,7 +67,7 @@ async function auth(email: String) {
     });
     try {
         const database = client.db(dbName);
-        const collection = database.collection(collectionName);        
+        const collection = database.collection(collectionName);
         document = await collection.findOne({ email: { $eq: email } });
 
     } finally {
@@ -195,14 +195,86 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
     let documents;
     let query;
     if (callByMicroregion) {
-        query = {
-            category, vehicle, stateId, microregionId,
-            $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: cityId } }]
-        };
-    } else {
-        query = { category, vehicle, stateId, cityId };
-    }
+        if (vehicle === Vehicle.Aluno) {
+            query = {
+                category,
+                $and: [
+                    {
+                        $expr: { $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: cityId } }] }
+                    },
+                    {
+                        $expr: { $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Ambos } }] }
+                    },
+                ],
+                stateId,
+                microregionId
+            };
+        } else if (vehicle === Vehicle.Instrutor) {
+            query = {
+                category,
+                vehicle,
+                $and: [
+                    {
+                        $expr: { $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: cityId } }] }
+                    },
+                    {
+                        $expr: { $or: [{ vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }] }
+                    },
+                ],
+                stateId,
+                microregionId
+            };
+        } else if (vehicle === Vehicle.Ambos) {
+            query = {
+                category,
+                vehicle,
+                $and: [
+                    {
+                        $expr: { $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: cityId } }] }
+                    },
+                    {
+                        $expr: { $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }] }
+                    },
+                ],
+                stateId,
+                microregionId
+            };
+        }
 
+        else {
+            query = {
+                category, vehicle, stateId, microregionId,
+                $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: cityId } }]
+            };
+        }
+
+    } else {
+        if (vehicle === Vehicle.Aluno) {
+            query = {
+                category,
+                $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Ambos } }],
+                stateId,
+                cityId
+            };
+        }
+        else if (vehicle === Vehicle.Instrutor) {
+            query = {
+                category,
+                $or: [{ vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }],
+                stateId,
+                cityId
+            };
+        }
+
+        else {
+            query = {
+                category,
+                $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }],
+                stateId,
+                cityId
+            };
+        }
+    }
     const client = new MongoClient(uri, {
         serverApi: {
             version: ServerApiVersion.v1,

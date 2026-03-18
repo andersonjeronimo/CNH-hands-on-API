@@ -1,10 +1,19 @@
 import express, { Request, Response, NextFunction } from 'express';
+import { WithId, Document } from 'mongodb';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import apiRouter from './routers/api-router';
 
-//import path from 'path';
+// Auth-middleware++++++++++++++++++++++++
+declare global {
+  namespace Express {
+    interface Request {
+      user?: Partial<WithId<Document>>; // Adiciona a nova propriedade opcional
+    }
+  }
+}
+// Auth-middleware++++++++++++++++++++++++
 
 
 const app = express();

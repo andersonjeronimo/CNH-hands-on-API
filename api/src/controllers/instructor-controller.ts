@@ -28,7 +28,7 @@ async function findInstructorById(req: Request, res: Response, next: NextFunctio
 }
 
 async function findInstructorByUserId(req: Request, res: Response, next: NextFunction) {
-    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+    const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;    
     const result = await InstructorRepository.findInstructorByUserId(id);
     res.status(200).json(result);
 }

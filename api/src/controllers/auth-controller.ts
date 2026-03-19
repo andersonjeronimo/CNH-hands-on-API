@@ -41,9 +41,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
         if (!verifyPass) {
             res.sendStatus(400);
         }
-
         const token = jwt.sign({ id: _authUser._id }, `${process.env.JWT_SECRET}`, { expiresIn: Number(process.env.JWT_EXPIRES) });
-
         const { password: _, ...authUser } = _authUser;
 
         res.status(200).json({

@@ -76,7 +76,7 @@ async function auth(email: string) {
 }
 
 async function findUser(id: string) {
-    let document;
+    let document;    
     const client = new MongoClient(uri, {
         serverApi: {
             version: ServerApiVersion.v1,

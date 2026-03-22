@@ -197,7 +197,7 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
     const query1 = {
         $match: {
             status: { $eq: Status.Ativo },
-            stateId            
+            stateId
         }
     }
 
@@ -245,13 +245,21 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
         }
     }
 
-    let query4 = {};    
+    let query4 = {};
 
     // Microregion
     if (callByMicroregion) {
         query4 = {
             $match: {
-                $and: [{ callByMicroregion: { $eq: true } }, { microregionId: { $eq: microregionId } }]
+                $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: cityId } }],
+                microregionId
+            }
+        }
+    } else if (!callByMicroregion) {
+        query4 = {
+            $match: {
+                cityId
+                //$and: [{ callByMicroregion: { $eq: false } }, { microregionId: { $eq: microregionId } }]
             }
         }
     }
@@ -270,9 +278,9 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
         pipeline.push(query1);
         pipeline.push(query2);
         pipeline.push(query3);
-        if (callByMicroregion) {
-            pipeline.push(query4);
-        }
+        pipeline.push(query4);
+        //if (callByMicroregion) {
+        //}
 
         documents = await collection.aggregate(pipeline)
             .skip(skip)

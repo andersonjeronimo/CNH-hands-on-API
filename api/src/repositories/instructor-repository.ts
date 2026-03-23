@@ -194,6 +194,14 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
     callByMicroregion: boolean, skip: number, limit: number) {
     let documents;
 
+    console.log(category);
+    console.log(vehicle);
+    console.log(stateId);
+    console.log(cityId);
+    console.log(microregionId);
+    console.log(callByMicroregion);
+
+
     const query1 = {
         $match: {
             status: { $eq: Status.Ativo },
@@ -278,9 +286,7 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
         pipeline.push(query1);
         pipeline.push(query2);
         pipeline.push(query3);
-        pipeline.push(query4);
-        //if (callByMicroregion) {
-        //}
+        pipeline.push(query4);        
 
         documents = await collection.aggregate(pipeline)
             .skip(skip)

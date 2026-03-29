@@ -10,8 +10,25 @@ export enum Category {
     AB = "A e B"
 }
 
-export enum Vehicle {    
+export enum Vehicle {
     Aluno = "Aluno",
     Instrutor = "Instrutor",
     Ambos = "Combinar"
+}
+
+export type ResponseDefault = {
+    success: boolean;
+    message: string;
+    data: {};
+    timestamp: string;
+}
+
+export type JwtPayload = {
+    id: string;
+    exp: number;
+}
+
+export type Properties = {
+    name: string;
+    value: string;
 }

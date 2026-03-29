@@ -5,7 +5,8 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
 //Webhook Mercado Pago
-import { Category, Status, Vehicle } from "../utils/utils";
+import { Category, Status, Vehicle, Properties } from "../utils/utils";
+import Instructor from 'src/models/instructor';
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
@@ -56,6 +57,26 @@ async function insertInstructor(document: {}) {
     return result.insertedId;
 }
 
+async function updateInstructor(document: Instructor) {
+    let result;
+    const client = new MongoClient(uri, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+    try {
+        const database = client.db(dbName);
+        const customers = database.collection(collectionName);
+        result = await customers.updateOne({ _id: new ObjectId(document._id) }, document);
+    } finally {
+        await client.close();
+    }
+    return result.upsertedId;
+}
+
+
 async function auth(email: String) {
     let document;
     const client = new MongoClient(uri, {
@@ -76,103 +97,119 @@ async function auth(email: String) {
     return document;
 }
 
-async function findInstructorById(id: string) {
-    let document;
-    const client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
-    try {
-        const database = client.db(dbName);
-        const collection = database.collection(collectionName);
-        document = await collection.findOne({ _id: new ObjectId(id) });
-    } finally {
-        await client.close();
-    }
-    return document;
-}
+//async function findInstructorById(id: string) {
+//    let document;
+//    const client = new MongoClient(uri, {
+//        serverApi: {
+//            version: ServerApiVersion.v1,
+//            strict: true,
+//            deprecationErrors: true,
+//        }
+//    });
+//    try {
+//        const database = client.db(dbName);
+//        const collection = database.collection(collectionName);
+//        document = await collection.findOne({ _id: new ObjectId(id) });
+//    } finally {
+//        await client.close();
+//    }
+//    return document;
+//}
 
-async function findInstructorByUserId(_id: string) {
-    let document;
-    const client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
-    try {
-        const database = client.db(dbName);
-        const collection = database.collection(collectionName);
-        document = await collection.findOne({ userId: { $eq: _id } });
-    } finally {
-        await client.close();
-    }
-    return document;
-}
+//async function findInstructorByUserId(_id: string) {
+//    let document;
+//    const client = new MongoClient(uri, {
+//        serverApi: {
+//            version: ServerApiVersion.v1,
+//            strict: true,
+//            deprecationErrors: true,
+//        }
+//    });
+//    try {
+//        const database = client.db(dbName);
+//        const collection = database.collection(collectionName);
+//        document = await collection.findOne({ userId: { $eq: _id } });
+//    } finally {
+//        await client.close();
+//    }
+//    return document;
+//}
 
-async function findInstructorByEmail(_email: string) {
-    let document;
-    const client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
-    try {
-        const database = client.db(dbName);
-        const collection = database.collection(collectionName);
-        document = await collection.findOne({ email: { $eq: _email } });
-    } finally {
-        await client.close();
-    }
-    return document;
-}
+//async function findInstructorByEmail(_email: string) {
+//    let document;
+//    const client = new MongoClient(uri, {
+//        serverApi: {
+//            version: ServerApiVersion.v1,
+//            strict: true,
+//            deprecationErrors: true,
+//        }
+//    });
+//    try {
+//        const database = client.db(dbName);
+//        const collection = database.collection(collectionName);
+//        document = await collection.findOne({ email: { $eq: _email } });
+//    } finally {
+//        await client.close();
+//    }
+//    return document;
+//}
 
-async function findInstructorByCPF(_cpf: string) {
-    let document;
-    const client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
-    try {
-        const database = client.db(dbName);
-        const collection = database.collection(collectionName);
-        document = await collection.findOne({ cpf: { $eq: _cpf } });
-    } finally {
-        await client.close();
-    }
-    return document;
-}
+//async function findInstructorByCPF(_cpf: string) {
+//    let document;
+//    let filter = { cpf: { $eq: _cpf } };    
+//    const client = new MongoClient(uri, {
+//        serverApi: {
+//            version: ServerApiVersion.v1,
+//            strict: true,
+//            deprecationErrors: true,
+//        }
+//    });
+//    try {
+//        const database = client.db(dbName);
+//        const collection = database.collection(collectionName);
+//        document = await collection.findOne(filter);
+//    } finally {
+//        await client.close();
+//    }
+//    return document;
+//}
 
-async function findInstructorByCNPJ(_cnpj: string) {
-    let document;
-    const client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
-    try {
-        const database = client.db(dbName);
-        const collection = database.collection(collectionName);
-        document = await collection.findOne({ cnpj: { $eq: _cnpj } });
-    } finally {
-        await client.close();
-    }
-    return document;
-}
+//async function findInstructorByCNPJ(_cnpj: string) {
+//    let document;
+//    const client = new MongoClient(uri, {
+//        serverApi: {
+//            version: ServerApiVersion.v1,
+//            strict: true,
+//            deprecationErrors: true,
+//        }
+//    });
+//    try {
+//        const database = client.db(dbName);
+//        const collection = database.collection(collectionName);
+//        document = await collection.findOne({ cnpj: { $eq: _cnpj } });
+//    } finally {
+//        await client.close();
+//    }
+//    return document;
+//}
 
-async function findInstructor(query: {}) {
+async function findInstructor(props: Properties) {
     let document;
+    let filter = {};
+
+    if (props.name === "id") {
+        filter = { _id: new ObjectId(props.value) };
+    }
+    else if (props.name === "userid") {
+        filter = { userId: { $eq: props.value } };
+    }    
+    else if (props.name === "cpf") {
+        filter = { cpf: { $eq: props.value } };
+    }
+    else if (props.name === "cnpj") {
+        filter = { cnpj: { $eq: props.value } };
+    }
+
     const client = new MongoClient(uri, {
         serverApi: {
             version: ServerApiVersion.v1,
@@ -183,7 +220,7 @@ async function findInstructor(query: {}) {
     try {
         const database = client.db(dbName);
         const collection = database.collection(collectionName);
-        document = await collection.findOne(query);
+        document = await collection.findOne(filter);
     } finally {
         await client.close();
     }
@@ -193,14 +230,6 @@ async function findInstructor(query: {}) {
 async function findInstructors(category: string, vehicle: string, stateId: number, cityId: number, microregionId: number,
     callByMicroregion: boolean, skip: number, limit: number) {
     let documents;
-
-    console.log(category);
-    console.log(vehicle);
-    console.log(stateId);
-    console.log(cityId);
-    console.log(microregionId);
-    console.log(callByMicroregion);
-
 
     const query1 = {
         $match: {
@@ -286,7 +315,7 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
         pipeline.push(query1);
         pipeline.push(query2);
         pipeline.push(query3);
-        pipeline.push(query4);        
+        pipeline.push(query4);
 
         documents = await collection.aggregate(pipeline)
             .skip(skip)
@@ -323,7 +352,7 @@ async function updateInstructorStatus(cpf: string, event: string) {
             break;
     }
 
-    let document;
+    let result;
     const client = new MongoClient(uri, {
         serverApi: {
             version: ServerApiVersion.v1,
@@ -334,7 +363,7 @@ async function updateInstructorStatus(cpf: string, event: string) {
     try {
         const database = client.db(dbName);
         const collection = database.collection(collectionName);
-        document = await collection.updateOne(
+        result = await collection.updateOne(
             { cpf: cpf },
             {
                 $set: {
@@ -347,24 +376,26 @@ async function updateInstructorStatus(cpf: string, event: string) {
         );
         // Print the number of matching and modified documents
         console.log(
-            `${document.matchedCount} document(s) matched the filter, updated ${document.modifiedCount} document(s)`
+            `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
         );
     } finally {
         // Close the connection after the operation completes
         await client.close();
     }
+    return result.upsertedId;
 
 }
 //Webhook Mercado Pago+++++++++++++++++++++++++++++++++++++++++++++
 
 export default {
     insertInstructor,
+    updateInstructor,
     auth,
-    findInstructorById,
-    findInstructorByUserId,
-    findInstructorByEmail,
-    findInstructorByCPF,
-    findInstructorByCNPJ,
+    //findInstructorById,
+    //findInstructorByUserId,
+    //findInstructorByEmail,
+    //findInstructorByCPF,
+    //findInstructorByCNPJ,
     findInstructor,
     findInstructors,
     updateInstructorStatus

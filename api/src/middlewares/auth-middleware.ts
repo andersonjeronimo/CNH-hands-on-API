@@ -5,26 +5,55 @@ import { Request, Response, NextFunction } from 'express';
 import authRepository from '../repositories/auth-repository';
 import jwt from "jsonwebtoken";
 
-type JwtPayload = {
-    id: string
+import { JwtPayload } from '../utils/utils';
+
+async function hasJwt(req: Request, res: Response, next: NextFunction) {
+    const { authorization } = req.headers;
+    if (!authorization) {
+        res.status(200).json({
+            success: false,
+            message: "Unauthorized, No auth token found",
+        });
+    }
+
+    next();
 }
 
-export const authMiddleware = async function verifyAuth(req: Request, res: Response, next: NextFunction) {
-    const { authorization } = req.headers;    
-    if (!authorization) {        
-        res.sendStatus(401);
+async function isAuthorized(req: Request, res: Response, next: NextFunction) {
+
+    const JWT_SECRET = `${process.env.JWT_SECRET}`;
+
+    if (!JWT_SECRET) {
+        res.status(200).json({
+            success: false,
+            message: "Something went wrong",            
+            timestamp: new Date().toISOString()
+        });
+    }
+    const { authorization } = req.headers;
+    const token = authorization ? authorization.split(' ')[1] : '';
+    const { id, exp } = jwt.verify(token, `${process.env.JWT_SECRET}`) as JwtPayload;
+
+    if (Date.now() / 1000 > exp) {
+        res.status(200).json({
+            success: false,
+            message: "Something went wrong",
+            timestamp: new Date().toISOString()
+        });
+    }
+
+    const isAuthenticUser = await authRepository.findUser(id);
+    if (!isAuthenticUser) {
+        res.status(200).json({
+            success: false,
+            message: "Unauthorized, No user matched",
+            timestamp: new Date().toISOString()
+        });
     } else {
-        const token = authorization.split(' ')[1];        
-        const { id } = jwt.verify(token, `${process.env.JWT_SECRET}`) as JwtPayload;       
-
-        const authUser = await authRepository.findUser(id);
-
-        if (!authUser) {            
-            res.sendStatus(401);
-        } else {
-            const { password: _, ...user } = authUser;
-            req.user = user;
-            next();
-        }
-    }    
+        const { password: _, ...user } = isAuthenticUser;
+        req.user = user;
+        next();
+    }
 }
+
+export default { hasJwt, isAuthorized };

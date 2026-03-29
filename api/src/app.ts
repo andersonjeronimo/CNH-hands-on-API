@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRouter);
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  res.status(500).send(error.message);
+  res.status(500).send(error.message);  
 })
 
 export default app;

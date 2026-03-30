@@ -36,7 +36,7 @@ async function run() {
 
 //https://www.mongodb.com/pt-br/docs/drivers/node/current/crud/insert/
 
-async function create(user: User) {
+async function create(user: {}) {
     let result;
     const client = new MongoClient(uri, {
         serverApi: {

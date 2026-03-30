@@ -16,8 +16,9 @@ router.post('/auth', authController.auth);
 
 //router.use(auth.hasJwt, auth.isAuthorized);--> assim, todas as rotas abaixo serão protegidas
 /*price*/
-router.get('/price', auth.hasJwt, auth.isAuthorized, priceController.getPrice);
+router.get('/price', priceController.getPrice);
 router.post('/price', auth.hasJwt, auth.isAuthorized, priceController.setPrice);
+router.put('/price', auth.hasJwt, auth.isAuthorized, priceController.updatePrice);
 /*instructors*/
 router.post('/instructor', auth.hasJwt, auth.isAuthorized, instructorController.insertInstructor);
 router.put('/instructor', auth.hasJwt, auth.isAuthorized, instructorController.updateInstructor);

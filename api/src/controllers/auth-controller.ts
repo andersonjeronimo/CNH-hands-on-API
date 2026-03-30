@@ -14,7 +14,7 @@ type JwtPayload = {
 }
 
 async function create(req: Request, res: Response, next: NextFunction) {
-    const user = req.body as User;
+    const user = req.body;    
     const userExists = await authRepository.auth(user.email);
     if (userExists) {
         res.send(409).json({
@@ -29,7 +29,7 @@ async function create(req: Request, res: Response, next: NextFunction) {
         res.status(201).json({
             success: true,
             message: "User created",
-            _id: insertedId,
+            result: insertedId,
             timestamp: new Date().toISOString()
         });
     }

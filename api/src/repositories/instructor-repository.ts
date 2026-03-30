@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb';
 
 //Webhook Mercado Pago
 import { Category, Status, Vehicle, Properties } from "../utils/utils";
-import Instructor from 'src/models/instructor';
+import Instructor from '../models/instructor';
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
@@ -97,102 +97,6 @@ async function auth(email: String) {
     return document;
 }
 
-//async function findInstructorById(id: string) {
-//    let document;
-//    const client = new MongoClient(uri, {
-//        serverApi: {
-//            version: ServerApiVersion.v1,
-//            strict: true,
-//            deprecationErrors: true,
-//        }
-//    });
-//    try {
-//        const database = client.db(dbName);
-//        const collection = database.collection(collectionName);
-//        document = await collection.findOne({ _id: new ObjectId(id) });
-//    } finally {
-//        await client.close();
-//    }
-//    return document;
-//}
-
-//async function findInstructorByUserId(_id: string) {
-//    let document;
-//    const client = new MongoClient(uri, {
-//        serverApi: {
-//            version: ServerApiVersion.v1,
-//            strict: true,
-//            deprecationErrors: true,
-//        }
-//    });
-//    try {
-//        const database = client.db(dbName);
-//        const collection = database.collection(collectionName);
-//        document = await collection.findOne({ userId: { $eq: _id } });
-//    } finally {
-//        await client.close();
-//    }
-//    return document;
-//}
-
-//async function findInstructorByEmail(_email: string) {
-//    let document;
-//    const client = new MongoClient(uri, {
-//        serverApi: {
-//            version: ServerApiVersion.v1,
-//            strict: true,
-//            deprecationErrors: true,
-//        }
-//    });
-//    try {
-//        const database = client.db(dbName);
-//        const collection = database.collection(collectionName);
-//        document = await collection.findOne({ email: { $eq: _email } });
-//    } finally {
-//        await client.close();
-//    }
-//    return document;
-//}
-
-//async function findInstructorByCPF(_cpf: string) {
-//    let document;
-//    let filter = { cpf: { $eq: _cpf } };    
-//    const client = new MongoClient(uri, {
-//        serverApi: {
-//            version: ServerApiVersion.v1,
-//            strict: true,
-//            deprecationErrors: true,
-//        }
-//    });
-//    try {
-//        const database = client.db(dbName);
-//        const collection = database.collection(collectionName);
-//        document = await collection.findOne(filter);
-//    } finally {
-//        await client.close();
-//    }
-//    return document;
-//}
-
-//async function findInstructorByCNPJ(_cnpj: string) {
-//    let document;
-//    const client = new MongoClient(uri, {
-//        serverApi: {
-//            version: ServerApiVersion.v1,
-//            strict: true,
-//            deprecationErrors: true,
-//        }
-//    });
-//    try {
-//        const database = client.db(dbName);
-//        const collection = database.collection(collectionName);
-//        document = await collection.findOne({ cnpj: { $eq: _cnpj } });
-//    } finally {
-//        await client.close();
-//    }
-//    return document;
-//}
-
 async function findInstructor(props: Properties) {
     let document;
     let filter = {};
@@ -202,7 +106,7 @@ async function findInstructor(props: Properties) {
     }
     else if (props.name === "userid") {
         filter = { userId: { $eq: props.value } };
-    }    
+    }
     else if (props.name === "cpf") {
         filter = { cpf: { $eq: props.value } };
     }
@@ -390,12 +294,7 @@ async function updateInstructorStatus(cpf: string, event: string) {
 export default {
     insertInstructor,
     updateInstructor,
-    auth,
-    //findInstructorById,
-    //findInstructorByUserId,
-    //findInstructorByEmail,
-    //findInstructorByCPF,
-    //findInstructorByCNPJ,
+    auth,    
     findInstructor,
     findInstructors,
     updateInstructorStatus

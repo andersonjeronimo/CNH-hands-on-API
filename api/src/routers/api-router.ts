@@ -21,6 +21,7 @@ router.post('/price', auth.hasJwt, auth.isAuthorized, priceController.setPrice);
 router.put('/price', auth.hasJwt, auth.isAuthorized, priceController.updatePrice);
 /*instructors*/
 router.post('/instructor', auth.hasJwt, auth.isAuthorized, instructorController.insertInstructor);
+router.get('/instructor', auth.hasJwt, auth.isAuthorized, instructorController.findInstructors);
 router.put('/instructor', auth.hasJwt, auth.isAuthorized, instructorController.updateInstructor);
 router.post('/instructor/search', auth.hasJwt, auth.isAuthorized, instructorController.findInstructors);
 /*instructors by filter*/

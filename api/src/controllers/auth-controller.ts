@@ -2,16 +2,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { Request, Response, NextFunction } from 'express';
-
-import User from 'src/models/user';
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import authRepository from '../repositories/auth-repository';
 
-type JwtPayload = {
-    id: string
-}
+import User from '../models/user';
+import authRepository from '../repositories/auth-repository';
 
 async function create(req: Request, res: Response, next: NextFunction) {
     const user = req.body;    
@@ -66,7 +61,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
             user: authUser,
             token: token,
             success: true,
-            message: "Authorized, user matched",
+            message: "Authorized, User matched",
             timestamp: new Date().toISOString()
         });
 

@@ -4,7 +4,7 @@ dotenv.config();
 import { Request, Response, NextFunction } from 'express';
 import InstructorRepository from '../repositories/instructor-repository';
 import Instructor from '../models/instructor';
-import { Properties } from "../utils/utils";
+import { Properties, Filter } from "../utils/utils";
 
 
 async function insertInstructor(req: Request, res: Response, next: NextFunction) {
@@ -70,7 +70,7 @@ async function findInstructor(req: Request, res: Response, next: NextFunction) {
         props.name = "cnpj";
         props.value = cnpj;
     }
-    
+
     const result = await InstructorRepository.findInstructor(props);
     res.status(200).json({
         success: true,
@@ -84,9 +84,11 @@ async function findInstructors(req: Request, res: Response, next: NextFunction) 
     const query = req.body.query;
     const { pageNumber, pageSize } = req.body.pagination;
     const skip = ((pageNumber - 1) * pageSize);
-
     const { category, vehicle, stateId, microregionId, callByMicroregion, cityId } = query;
-    const result = await InstructorRepository.findInstructors(category, vehicle, stateId, cityId, microregionId, callByMicroregion, skip, pageSize);
+
+    const filter: Filter = { category, vehicle, stateId, cityId, microregionId, callByMicroregion, skip, limit: pageSize };
+
+    const result = await InstructorRepository.findInstructors(filter);
     res.status(200).json({
         success: true,
         message: "Instructor found",
@@ -99,7 +101,7 @@ async function findInstructors(req: Request, res: Response, next: NextFunction) 
 export default {
     insertInstructor,
     updateInstructor,
-    updateInstructorStatus,    
+    updateInstructorStatus,
     findInstructor,
     findInstructors
 }

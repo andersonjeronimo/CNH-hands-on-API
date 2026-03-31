@@ -32,3 +32,14 @@ export type Properties = {
     name: string;
     value: string;
 }
+
+export type Filter = {
+    category: string;
+    vehicle: string;
+    stateId: number;
+    cityId: number;
+    microregionId: number;
+    callByMicroregion: boolean;
+    skip: number;
+    limit: number;
+}

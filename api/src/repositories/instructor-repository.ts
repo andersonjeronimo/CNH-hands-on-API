@@ -5,7 +5,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
 //Webhook Mercado Pago
-import { Category, Status, Vehicle, Properties } from "../utils/utils";
+import { Category, Status, Vehicle, Properties, Filter } from "../utils/utils";
 import Instructor from '../models/instructor';
 
 const uri = `${process.env.URI}`;
@@ -131,33 +131,30 @@ async function findInstructor(props: Properties) {
     return document;
 }
 
-async function findInstructors(category: string, vehicle: string, stateId: number, cityId: number, microregionId: number,
-    callByMicroregion: boolean, skip: number, limit: number) {
-    let documents;
+async function findInstructors(filter: Filter) {
+    let documents;   
 
     const query1 = {
         $match: {
             status: { $eq: Status.Ativo },
-            stateId
+            stateId: { $eq: filter.stateId }
         }
     }
 
-    let query2 = {};
-
-    // Vehicle attribute
-    if (vehicle === Vehicle.Aluno) {
+    let query2 = {};    
+    if (filter.vehicle === Vehicle.Aluno) {
         query2 = {
             $match: {
                 $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Ambos } }]
             }
         }
-    } else if (vehicle === Vehicle.Instrutor) {
+    } else if (filter.vehicle === Vehicle.Instrutor) {
         query2 = {
             $match: {
                 $or: [{ vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }]
             }
         }
-    } else if (vehicle === Vehicle.Ambos) {
+    } else if (filter.vehicle === Vehicle.Ambos) {
         query2 = {
             $match: {
                 $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }]
@@ -165,41 +162,37 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
         }
     }
 
-    let query3 = {};
-
-    // Category attribute
-    if (category === Category.A) {
+    let query3 = {};    
+    if (filter.category === Category.A) {
         query3 = {
             $match: {
                 $or: [{ category: { $eq: Category.A } }, { category: { $eq: Category.AB } }]
             }
         }
-    } else if (category === Category.B) {
+    } else if (filter.category === Category.B) {
         query3 = {
             $match: {
                 $or: [{ category: { $eq: Category.B } }, { category: { $eq: Category.AB } }]
             }
         }
-    } else if (category === Category.AB) {
+    } else if (filter.category === Category.AB) {
         query3 = {
             $match: { category: { $eq: Category.AB } }
         }
     }
 
     let query4 = {};
-
-    // Microregion
-    if (callByMicroregion) {
+    if (filter.callByMicroregion) {
         query4 = {
             $match: {
-                $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: cityId } }],
-                microregionId
+                $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: filter.cityId } }],
+                microregionId: { $eq: filter.microregionId }
             }
         }
-    } else if (!callByMicroregion) {
+    } else if (!filter.callByMicroregion) {
         query4 = {
             $match: {
-                cityId
+                cityId: { $eq: filter.cityId }
                 //$and: [{ callByMicroregion: { $eq: false } }, { microregionId: { $eq: microregionId } }]
             }
         }
@@ -222,8 +215,8 @@ async function findInstructors(category: string, vehicle: string, stateId: numbe
         pipeline.push(query4);
 
         documents = await collection.aggregate(pipeline)
-            .skip(skip)
-            .limit(limit)
+            .skip(filter.skip)
+            .limit(filter.limit)
             .toArray();
     } finally {
         await client.close();
@@ -294,7 +287,7 @@ async function updateInstructorStatus(cpf: string, event: string) {
 export default {
     insertInstructor,
     updateInstructor,
-    auth,    
+    auth,
     findInstructor,
     findInstructors,
     updateInstructorStatus

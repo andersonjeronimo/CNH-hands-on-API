@@ -91,7 +91,7 @@ async function findInstructors(req: Request, res: Response, next: NextFunction) 
     const result = await InstructorRepository.findInstructors(filter);
     res.status(200).json({
         success: true,
-        message: "Instructor found",
+        message: "Instructors found",
         result: result,
         timestamp: new Date().toISOString()
     });

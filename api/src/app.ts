@@ -15,7 +15,6 @@ declare global {
 }
 // Auth-middleware++++++++++++++++++++++++
 
-
 const app = express();
 app.use(morgan('tiny'));
 app.use(cors());

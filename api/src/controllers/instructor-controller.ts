@@ -11,6 +11,7 @@ async function insertInstructor(req: Request, res: Response, next: NextFunction)
     const instructor = req.body as Instructor;
     const insertedId = await InstructorRepository.insertInstructor(instructor);
     res.status(201).json({
+        status: 201,
         success: true,
         message: "Instructor created",
         result: insertedId,
@@ -22,6 +23,7 @@ async function updateInstructor(req: Request, res: Response, next: NextFunction)
     const instructor = req.body as Instructor;
     const upsertedId = await InstructorRepository.updateInstructor(instructor);
     res.status(204).json({
+        status: 204,
         success: true,
         message: "Instructor updated",
         result: upsertedId,
@@ -35,6 +37,7 @@ async function updateInstructorStatus(req: Request, res: Response, next: NextFun
     const event = Array.isArray(req.params.event) ? req.params.is[0] : req.params.event;
     const upsertedId = await InstructorRepository.updateInstructorStatus(cpf, event);
     res.status(204).json({
+        status: 204,
         success: true,
         message: "Instructor updated",
         result: upsertedId,
@@ -73,6 +76,7 @@ async function findInstructor(req: Request, res: Response, next: NextFunction) {
 
     const result = await InstructorRepository.findInstructor(props);
     res.status(200).json({
+        status: 200,
         success: true,
         message: "Instructor found",
         result: result,
@@ -90,6 +94,7 @@ async function findInstructors(req: Request, res: Response, next: NextFunction) 
 
     const result = await InstructorRepository.findInstructors(filter);
     res.status(200).json({
+        status: 200,
         success: true,
         message: "Instructors found",
         result: result,

@@ -11,6 +11,7 @@ async function hasJwt(req: Request, res: Response, next: NextFunction) {
     const { authorization } = req.headers;
     if (!authorization) {
         res.status(200).json({
+            status: 404,
             success: false,
             message: "Unauthorized, No auth token found",
         });
@@ -25,8 +26,9 @@ async function isAuthorized(req: Request, res: Response, next: NextFunction) {
 
     if (!JWT_SECRET) {
         res.status(200).json({
+            status: 401,
             success: false,
-            message: "Something went wrong",            
+            message: "Unauthorized, Something went wrong",
             timestamp: new Date().toISOString()
         });
     }
@@ -36,8 +38,9 @@ async function isAuthorized(req: Request, res: Response, next: NextFunction) {
 
     if (Date.now() / 1000 > exp) {
         res.status(200).json({
+            status: 401,
             success: false,
-            message: "Something went wrong",
+            message: "Unauthorized, Token expired",
             timestamp: new Date().toISOString()
         });
     }
@@ -45,6 +48,7 @@ async function isAuthorized(req: Request, res: Response, next: NextFunction) {
     const isAuthenticUser = await authRepository.findUser(id);
     if (!isAuthenticUser) {
         res.status(200).json({
+            status: 401,
             success: false,
             message: "Unauthorized, No user matched",
             timestamp: new Date().toISOString()

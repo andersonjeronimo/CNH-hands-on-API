@@ -36,9 +36,9 @@ async function findUser(req: Request, res: Response, next: NextFunction) {
     const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const result = await authRepository.findUser(id);
     res.status(200).json({
-        status: 200,
-        success: true,
-        message: "User found",
+        status: result ? 200 : 404,
+        success: result ? true : false,
+        message: result ? "User found" : "User not found",
         user: result,
         timestamp: new Date().toISOString()
     });

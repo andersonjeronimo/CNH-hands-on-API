@@ -9,9 +9,9 @@ import Price from '../models/price';
 async function getPrice(req: Request, res: Response, next: NextFunction) {    
     const result = await priceRepository.findPrice();    
     res.status(200).json({
-        status: 200,
-        success: true,
-        message: "Price found",
+        status: result ? 200 : 404,
+        success: result ? true : false,
+        message: result ? "Price found" : "Price not found",
         result: result,
         timestamp: new Date().toISOString()
     });
@@ -33,9 +33,9 @@ async function updatePrice(req: Request, res: Response, next: NextFunction) {
     const updatedPrice = req.body as Price;
     const upsertedId = await priceRepository.updatePrice(updatedPrice);
     res.status(204).json({
-        status: 204,
+        status: upsertedId ? 204 : 304,
         success: true,
-        message: "Price updated",
+        message: upsertedId ? "Price updated" : "Not Modified, No changes detected",
         result: upsertedId,
         timestamp: new Date().toISOString()
     });

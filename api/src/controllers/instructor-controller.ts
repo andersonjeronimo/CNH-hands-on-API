@@ -99,9 +99,9 @@ async function findInstructors(req: Request, res: Response, next: NextFunction) 
     const result = await InstructorRepository.findInstructors(filter);   
 
     res.status(200).json({
-        status: result ? 200 : 404,
-        success: result ? true : false,
-        message: result ? "Instructors found" : "No instructors found",
+        status: result.length ? 200 : 404,
+        success: result.length ? true : false,
+        message: result.length ? "Instructors found" : "No instructors found",
         result: result,
         timestamp: new Date().toISOString()
     });

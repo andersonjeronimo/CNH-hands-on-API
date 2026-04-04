@@ -16,7 +16,6 @@ async function hasJwt(req: Request, res: Response, next: NextFunction) {
             message: "Unauthorized, No auth token found",
         });
     }
-
     next();
 }
 
@@ -56,8 +55,8 @@ async function isAuthorized(req: Request, res: Response, next: NextFunction) {
     } else {
         const { password: _, ...user } = isAuthenticUser;
         req.user = user;
-        next();
     }
+    next();
 }
 
 export default { hasJwt, isAuthorized };

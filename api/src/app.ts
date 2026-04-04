@@ -18,6 +18,8 @@ declare global {
 const app = express();
 app.use(morgan('tiny'));
 app.use(cors());
+//app.use(cors({ origin: 'http://localhost:5173' }));
+//app.use(cors({ origin: 'https://cnhnamao2026.com.br' }));
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
 //app.use(express.static(path.join(__dirname, '/public')));
 //app.use(express.static('public'));
-//app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 // auth & instructor
 app.use('/api', apiRouter);

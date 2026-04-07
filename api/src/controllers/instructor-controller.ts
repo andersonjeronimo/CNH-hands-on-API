@@ -58,8 +58,7 @@ async function findInstructor(req: Request, res: Response, next: NextFunction) {
         value: ""
     };
 
-    if (id) {
-        console.log("TEM ID");
+    if (id) {        
         props.name = "id";
         props.value = id;
     }

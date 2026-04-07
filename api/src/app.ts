@@ -37,7 +37,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
     success: false,
     message: `Error: ${error.message}`,
     timestamp: new Date().toISOString()
-  });
-})
+  });  
+});
 
 export default app;

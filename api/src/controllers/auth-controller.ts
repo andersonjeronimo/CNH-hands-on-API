@@ -12,7 +12,7 @@ async function create(req: Request, res: Response, next: NextFunction) {
     const user = req.body;
     const userExists = await authRepository.auth(user.email);
     if (userExists) {
-        res.send(200).json({
+        res.status(200).json({
             status: 409,
             success: false,
             message: "Unauthorized, User already registered",
@@ -22,7 +22,7 @@ async function create(req: Request, res: Response, next: NextFunction) {
         const hashPassword = await bcrypt.hash(user.password, 8);
         user.password = hashPassword;
         const insertedId = await authRepository.create(user);
-        res.status(201).json({
+        res.status(200).json({
             status: 201,
             success: true,
             message: "User created",

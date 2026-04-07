@@ -10,7 +10,7 @@ import { Properties, Filter } from "../utils/utils";
 async function insertInstructor(req: Request, res: Response, next: NextFunction) {
     const instructor = req.body as Instructor;
     const insertedId = await InstructorRepository.insertInstructor(instructor);
-    res.status(201).json({
+    res.status(200).json({
         status: 201,
         success: true,
         message: "Instructor created",
@@ -58,7 +58,7 @@ async function findInstructor(req: Request, res: Response, next: NextFunction) {
         value: ""
     };
 
-    if (id) {        
+    if (id) {
         props.name = "id";
         props.value = id;
     }
@@ -95,7 +95,7 @@ async function findInstructors(req: Request, res: Response, next: NextFunction) 
 
     const filter: Filter = { category, vehicle, stateId, cityId, microregionId, callByMicroregion, skip, limit: pageSize };
 
-    const result = await InstructorRepository.findInstructors(filter);   
+    const result = await InstructorRepository.findInstructors(filter);
 
     res.status(200).json({
         status: result.length ? 200 : 404,

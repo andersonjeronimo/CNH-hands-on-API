@@ -23,7 +23,8 @@ router.put('/price', auth.hasJwt, auth.isAuthorized, priceController.updatePrice
 router.post('/instructor', auth.hasJwt, auth.isAuthorized, instructorController.insertInstructor);
 router.get('/instructor', auth.hasJwt, auth.isAuthorized, instructorController.findInstructors);
 router.put('/instructor', auth.hasJwt, auth.isAuthorized, instructorController.updateInstructor);
-router.post('/instructor/search', auth.hasJwt, auth.isAuthorized, instructorController.findInstructors);
+//router.post('/instructor/search', auth.hasJwt, auth.isAuthorized, instructorController.findInstructors);
+router.post('/instructor/search', instructorController.findInstructors);
 /*instructors by filter*/
 router.get('/instructor/:id', auth.hasJwt, auth.isAuthorized, instructorController.findInstructor);
 router.get('/instructor/by-user-id/:userid', auth.hasJwt, auth.isAuthorized, instructorController.findInstructor);

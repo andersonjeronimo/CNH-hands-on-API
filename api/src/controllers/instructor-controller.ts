@@ -9,6 +9,7 @@ import { Properties, Filter } from "../utils/utils";
 
 async function insertInstructor(req: Request, res: Response, next: NextFunction) {
     const instructor = req.body as Instructor;
+    console.log("Received Instructor:", instructor);
     const insertedId = await InstructorRepository.insertInstructor(instructor);
     res.status(200).json({
         status: 201,
@@ -20,7 +21,7 @@ async function insertInstructor(req: Request, res: Response, next: NextFunction)
 }
 
 async function updateInstructor(req: Request, res: Response, next: NextFunction) {
-    const instructor = req.body as Instructor;
+    const instructor = req.body;// as Instructor;    
     const upsertedId = await InstructorRepository.updateInstructor(instructor);
     res.status(200).json({
         status: upsertedId ? 204 : 304,

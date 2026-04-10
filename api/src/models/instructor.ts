@@ -1,5 +1,4 @@
-export default class Instructor {
-    _id?: string;
+export default class Instructor {    
     userId:string;
     firstname: string;
     lastname: string;    
@@ -19,14 +18,14 @@ export default class Instructor {
     callByMicroregion: boolean;
     agree: boolean;
 
-    constructor(userId:string, firstname: string, lastname: string, email: string, password: string, ddd: string, phone: string, cpf: string, cnpj: string, status: string, category: string, vehicle: string, description: string,
+    constructor(userId:string, firstname: string, lastname: string, ddd: string, phone: string, cpf: string, cnpj: string, status: string, category: string, vehicle: string, description: string,
         state: string,
         stateId: number,
         city: string,
         cityId: number,
         microregionId: number,
         callByMicroregion: boolean,
-        agree: boolean
+        agree: boolean        
     ) {
         this.userId = userId;
         this.firstname = firstname;
@@ -45,6 +44,6 @@ export default class Instructor {
         this.cityId = cityId;
         this.microregionId = microregionId;
         this.callByMicroregion = callByMicroregion;
-        this.agree = agree;
+        this.agree = agree;        
     }
 }

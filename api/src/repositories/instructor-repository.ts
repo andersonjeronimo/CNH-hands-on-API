@@ -38,7 +38,7 @@ run().catch(console.dir);
 
 //https://www.mongodb.com/pt-br/docs/drivers/node/current/crud/insert/
 
-async function insertInstructor(document: {}) {
+async function insertInstructor(document: Instructor) {
     let result;
     const client = new MongoClient(uri, {
         serverApi: {
@@ -69,7 +69,27 @@ async function updateInstructor(document: Instructor) {
     try {
         const database = client.db(dbName);
         const customers = database.collection(collectionName);
-        result = await customers.updateOne({ _id: new ObjectId(document._id) }, document);
+        result = await customers.updateOne({ userId: document.userId },
+            {
+                $set: {
+                    firstname: document.firstname,
+                    lastname: document.lastname,
+                    ddd: document.ddd,
+                    phone: document.phone,
+                    cpf: document.cpf,
+                    cnpj: document.cnpj,
+                    category: document.category,
+                    vehicle: document.vehicle,
+                    description: document.description,
+                    state: document.state,
+                    stateId: document.stateId,
+                    city: document.city,
+                    cityId: document.cityId,
+                    microregionId: document.microregionId,
+                    callByMicroregion: document.callByMicroregion
+                }
+            }
+        );
     } finally {
         await client.close();
     }
@@ -132,7 +152,7 @@ async function findInstructor(props: Properties) {
 }
 
 async function findInstructors(filter: Filter) {
-    let documents;   
+    let documents;
 
     const query1 = {
         $match: {
@@ -141,7 +161,7 @@ async function findInstructors(filter: Filter) {
         }
     }
 
-    let query2 = {};    
+    let query2 = {};
     if (filter.vehicle === Vehicle.Aluno) {
         query2 = {
             $match: {
@@ -162,7 +182,7 @@ async function findInstructors(filter: Filter) {
         }
     }
 
-    let query3 = {};    
+    let query3 = {};
     if (filter.category === Category.A) {
         query3 = {
             $match: {

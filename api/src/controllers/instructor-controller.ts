@@ -3,31 +3,31 @@ dotenv.config();
 
 import { Request, Response, NextFunction } from 'express';
 import InstructorRepository from '../repositories/instructor-repository';
-import Instructor from '../models/instructor';
-import { Properties, Filter } from "../utils/utils";
+import { Properties, Filter, Instructor } from "../utils/utils";
 
 
 async function insertInstructor(req: Request, res: Response, next: NextFunction) {
     const instructor = req.body as Instructor;
     console.log("Received Instructor:", instructor);
     const insertedId = await InstructorRepository.insertInstructor(instructor);
+    var creationDate = insertedId ? insertedId.getTimestamp() : new Date();
     res.status(200).json({
         status: 201,
         success: true,
         message: "Instructor created",
         result: insertedId,
-        timestamp: new Date().toISOString()
+        timestamp: creationDate.toISOString()
     });
 }
 
 async function updateInstructor(req: Request, res: Response, next: NextFunction) {
-    const instructor = req.body;// as Instructor;    
-    const upsertedId = await InstructorRepository.updateInstructor(instructor);
+    const instructor = req.body as Instructor;
+    const modifiedCount = await InstructorRepository.updateInstructor(instructor);
     res.status(200).json({
-        status: upsertedId ? 204 : 304,
+        status: (modifiedCount > 0) ? 204 : 304,
         success: true,
-        message: upsertedId ? "Instructor updated" : "Not Modified, No changes detected",
-        result: upsertedId,
+        message: (modifiedCount > 0) ? "Instructor updated" : "Not Modified, No changes detected",
+        result: modifiedCount,
         timestamp: new Date().toISOString()
     });
 
@@ -38,13 +38,14 @@ async function updateInstructorStatus(req: Request, res: Response, next: NextFun
     const { cpf } = req.body;
     const event = Array.isArray(req.params.event) ? req.params.is[0] : req.params.event;
     const upsertedId = await InstructorRepository.updateInstructorStatus(cpf, event);
+    var creationDate = upsertedId ? upsertedId.getTimestamp() : new Date();
 
     res.status(200).json({
         status: upsertedId ? 204 : 304,
         success: true,
         message: upsertedId ? "Instructor updated" : "Not Modified, No changes detected",
         result: upsertedId,
-        timestamp: new Date().toISOString()
+        timestamp: creationDate.toISOString()
     });
 }
 
@@ -76,14 +77,15 @@ async function findInstructor(req: Request, res: Response, next: NextFunction) {
         props.value = cnpj;
     }
 
-    const result = await InstructorRepository.findInstructor(props);
+    const result = await InstructorRepository.findInstructor(props);    
+    var creationDate = result ? result._id.getTimestamp() : new Date();
 
     res.status(200).json({
         status: result ? 200 : 404,
         success: result ? true : false,
         message: result ? "Instructor found" : "Instructor not found",
         result: result,
-        timestamp: new Date().toISOString()
+        timestamp: creationDate.toISOString()
     });
 }
 

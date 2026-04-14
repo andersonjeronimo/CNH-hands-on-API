@@ -17,29 +17,66 @@ export enum Vehicle {
 }
 
 export type ResponseDefault = {
-    success: boolean;
-    message: string;
-    data: {};
-    timestamp: string;
+    success: boolean,
+    message: string,
+    data: any,
+    timestamp: string,
 }
 
 export type JwtPayload = {
-    id: string;
-    exp: number;
+    id: string,
+    exp: number,
 }
 
 export type Properties = {
-    name: string;
-    value: string;
+    name: string,
+    value: string,
 }
 
 export type Filter = {
-    category: string;
-    vehicle: string;
-    stateId: number;
-    cityId: number;
-    microregionId: number;
-    callByMicroregion: boolean;
-    skip: number;
-    limit: number;
+    category: string,
+    vehicle: string,
+    stateId: number,
+    cityId: number,
+    microregionId: number,
+    callByMicroregion: boolean,
+    skip: number,
+    limit: number,
+}
+
+export type Instructor = {
+    userId: string,
+    firstname: string,
+    lastname: string,
+    ddd: string,
+    phone: string,
+    cpf: string,
+    cnpj: string,
+    status: string,
+    category: string,
+    vehicle: string,
+    description: string,
+    state: string,
+    stateId: number,
+    city: string,
+    cityId: number,
+    microregionId: number,
+    callByMicroregion: boolean,
+    agree: boolean
+}
+
+export type Pagination = {
+    pageNumber: number,
+    pageSize: number,
+    limit: number,
+}
+
+export type Price = {
+    value: number,
+}
+
+export type User = {
+    email: string,
+    password: string,
+    role: string,
 }

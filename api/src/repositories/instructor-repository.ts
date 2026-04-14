@@ -5,8 +5,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
 //Webhook Mercado Pago
-import { Category, Status, Vehicle, Properties, Filter } from "../utils/utils";
-import Instructor from '../models/instructor';
+import { Instructor, Category, Status, Vehicle, Properties, Filter } from "../utils/utils";
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
@@ -49,15 +48,15 @@ async function insertInstructor(document: Instructor) {
     });
     try {
         const database = client.db(dbName);
-        const customers = database.collection(collectionName);
-        result = await customers.insertOne(document);
+        const collection = database.collection(collectionName);
+        result = await collection.insertOne(document);
     } finally {
         await client.close();
     }
     return result.insertedId;
 }
 
-async function updateInstructor(document: Instructor) {
+async function updateInstructor(document: Instructor) {    
     let result;
     const client = new MongoClient(uri, {
         serverApi: {
@@ -68,32 +67,35 @@ async function updateInstructor(document: Instructor) {
     });
     try {
         const database = client.db(dbName);
-        const customers = database.collection(collectionName);
-        result = await customers.updateOne({ userId: document.userId },
-            {
-                $set: {
-                    firstname: document.firstname,
-                    lastname: document.lastname,
-                    ddd: document.ddd,
-                    phone: document.phone,
-                    cpf: document.cpf,
-                    cnpj: document.cnpj,
-                    category: document.category,
-                    vehicle: document.vehicle,
-                    description: document.description,
-                    state: document.state,
-                    stateId: document.stateId,
-                    city: document.city,
-                    cityId: document.cityId,
-                    microregionId: document.microregionId,
-                    callByMicroregion: document.callByMicroregion
-                }
-            }
-        );
+        const collection = database.collection(collectionName);
+        const filter = { userId: document.userId };
+        const updateDocument = {
+            $set: {
+                firstname: document.firstname,
+                lastname: document.lastname,
+                ddd: document.ddd,
+                phone: document.phone,
+                cpf: document.cpf,
+                cnpj: document.cnpj,
+                category: document.category,
+                vehicle: document.vehicle,
+                description: document.description,
+                state: document.state,
+                stateId: document.stateId,
+                city: document.city,
+                cityId: document.cityId,
+                microregionId: document.microregionId,
+                callByMicroregion: document.callByMicroregion
+            },
+        };
+
+        result = await collection.updateOne(filter, updateDocument);
+        
     } finally {
         await client.close();
     }
-    return result.upsertedId;
+    console.log(JSON.stringify(result));
+    return result.modifiedCount;
 }
 
 

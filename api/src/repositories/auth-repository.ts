@@ -4,7 +4,7 @@ dotenv.config();
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
-//import User from 'src/models/user';
+import { User } from '../utils/utils';
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
@@ -76,7 +76,7 @@ async function auth(email: string) {
 }
 
 async function findUser(id: string) {
-    let document;    
+    let document;
     const client = new MongoClient(uri, {
         serverApi: {
             version: ServerApiVersion.v1,

@@ -5,29 +5,31 @@ import { Request, Response, NextFunction } from 'express';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import User from '../models/user';
+import { User } from "../utils/utils";
 import authRepository from '../repositories/auth-repository';
 
 async function create(req: Request, res: Response, next: NextFunction) {
     const user = req.body;
     const userExists = await authRepository.auth(user.email);
     if (userExists) {
+        var creationDate = userExists._id.getTimestamp();
         res.status(200).json({
             status: 409,
             success: false,
             message: "Unauthorized, User already registered",
-            timestamp: new Date().toISOString()
+            timestamp: creationDate.toISOString()
         });
     } else {
         const hashPassword = await bcrypt.hash(user.password, 8);
         user.password = hashPassword;
         const insertedId = await authRepository.create(user);
+        var creationDate = insertedId.getTimestamp();
         res.status(200).json({
             status: 201,
             success: true,
             message: "User created",
             result: insertedId,
-            timestamp: new Date().toISOString()
+            timestamp: creationDate.toISOString()
         });
     }
 }
@@ -35,12 +37,13 @@ async function create(req: Request, res: Response, next: NextFunction) {
 async function findUser(req: Request, res: Response, next: NextFunction) {
     const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
     const result = await authRepository.findUser(id);
+    var creationDate = result ? result._id.getTimestamp() : new Date();
     res.status(200).json({
         status: result ? 200 : 404,
         success: result ? true : false,
         message: result ? "User found" : "User not found",
         user: result,
-        timestamp: new Date().toISOString()
+        timestamp: creationDate.toISOString()
     });
 }
 
@@ -50,7 +53,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
     const _authUser = await authRepository.auth(user.email);
     if (_authUser) {
         const verifyPass = await bcrypt.compare(user.password, _authUser.password);
-        if (!verifyPass) {
+        if (!verifyPass) {            
             res.status(200).json({
                 status: 401,
                 success: false,
@@ -60,14 +63,15 @@ async function auth(req: Request, res: Response, next: NextFunction) {
         }
         const token = jwt.sign({ id: _authUser._id }, `${process.env.JWT_SECRET}`, { expiresIn: Number(process.env.JWT_EXPIRES) });
         const { password: _, ...authUser } = _authUser;
-
+        
+        var creationDate = authUser._id.getTimestamp();
         res.status(200).json({
             status: 200,
             user: authUser,
             token: token,
             success: true,
             message: "Authorized, User matched",
-            timestamp: new Date().toISOString()
+            timestamp: creationDate.toISOString()
         });
 
     } else {

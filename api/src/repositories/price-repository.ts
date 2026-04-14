@@ -3,7 +3,7 @@ dotenv.config();
 
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
-import Price from '../models/price';
+import { Price } from '../utils/utils';
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
@@ -54,7 +54,7 @@ async function findPrice() {
     return document;
 }
 
-async function setPrice(document: {}) {
+async function setPrice(document: Price) {
     let result;
     const client = new MongoClient(uri, {
         serverApi: {
@@ -73,7 +73,7 @@ async function setPrice(document: {}) {
     return result.insertedId;
 }
 
-async function updatePrice(document: Price) {
+async function updatePrice(document: any) {
     let result;
     const client = new MongoClient(uri, {
         serverApi: {

@@ -6,6 +6,7 @@ import priceController from '../controllers/price-controller';
 const router = express.Router();
 
 import auth from '../middlewares/auth-middleware';
+import cloudinaryController from "../controllers/cloudinary-controller";
 
 /*Webhooks*/
 router.post('/webhook/:event', instructorController.updateInstructorStatus);
@@ -13,6 +14,7 @@ router.post('/webhook/:event', instructorController.updateInstructorStatus);
 router.post('/user', authController.create);
 //router.get('/user/:id', authController.findUser);
 router.post('/auth', authController.auth);
+router.post('/auth/session', authController.session);
 
 //router.use(auth.hasJwt, auth.isAuthorized);--> assim, todas as rotas abaixo serão protegidas
 /*price*/
@@ -30,5 +32,8 @@ router.get('/instructor/:id', auth.hasJwt, auth.isAuthorized, instructorControll
 router.get('/instructor/by-user-id/:userid', auth.hasJwt, auth.isAuthorized, instructorController.findInstructor);
 router.get('/instructor/by-cpf/:cpf', auth.hasJwt, auth.isAuthorized, instructorController.findInstructor);
 router.get('/instructor/by-cnpj/:cnpj', auth.hasJwt, auth.isAuthorized, instructorController.findInstructor);
+/*cloudinary images*/
+router.post('/cloudinary/signature', auth.hasJwt, auth.isAuthorized, cloudinaryController.cloudinarySignature);
+
 
 export default router;

@@ -77,7 +77,7 @@ async function findInstructor(req: Request, res: Response, next: NextFunction) {
         props.value = cnpj;
     }
 
-    const result = await InstructorRepository.findInstructor(props);    
+    const result = await InstructorRepository.findInstructor(props);        
     var creationDate = result ? result._id.getTimestamp() : new Date();
 
     res.status(200).json({

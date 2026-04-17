@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { User } from "../utils/utils";
+import { User, JwtPayload } from "../utils/utils";
 import authRepository from '../repositories/auth-repository';
 
 async function create(req: Request, res: Response, next: NextFunction) {
@@ -53,7 +53,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
     const _authUser = await authRepository.auth(user.email);
     if (_authUser) {
         const verifyPass = await bcrypt.compare(user.password, _authUser.password);
-        if (!verifyPass) {            
+        if (!verifyPass) {
             res.status(200).json({
                 status: 401,
                 success: false,
@@ -63,7 +63,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
         }
         const token = jwt.sign({ id: _authUser._id }, `${process.env.JWT_SECRET}`, { expiresIn: Number(process.env.JWT_EXPIRES) });
         const { password: _, ...authUser } = _authUser;
-        
+
         var creationDate = authUser._id.getTimestamp();
         res.status(200).json({
             status: 200,
@@ -84,4 +84,51 @@ async function auth(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-export default { create, auth, findUser }
+//verifica se sessão expirou
+async function session(req: Request, res: Response, next: NextFunction) {
+    const body = req.body;
+
+    const JWT_SECRET = `${process.env.JWT_SECRET}`;
+    const { authorization } = req.headers;
+    const token = authorization ? authorization.split(' ')[1] : '';
+    const { id, exp } = jwt.verify(token, `${process.env.JWT_SECRET}`) as JwtPayload;
+
+    if (!JWT_SECRET) {
+        res.status(200).json({
+            status: 401,
+            success: false,
+            message: "Unauthorized, Something went wrong",
+            timestamp: new Date().toISOString()
+        });
+
+    } else if (Date.now() / 1000 > exp) {
+        res.status(200).json({
+            status: 401,
+            success: false,
+            message: "Unauthorized, Token expired",
+            timestamp: new Date().toISOString()
+        });
+
+    } else if (id !== body.id) {
+        res.status(200).json({
+            status: 401,
+            success: false,
+            message: "Unauthorized, No user matched",
+            timestamp: new Date().toISOString()
+        });
+    } else {
+
+        res.status(200).json({
+            status: 200,
+            success: true,
+            message: "Authorized, Valid token, Token and user matched",
+            timestamp: new Date().toISOString()
+        });
+
+    }
+
+}
+
+
+
+export default { create, auth, findUser, session }

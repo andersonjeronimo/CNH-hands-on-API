@@ -46,6 +46,9 @@ export type Filter = {
 
 export type Instructor = {
     userId: string,
+    cloudinary_public_id: string,
+    cloudinary_secure_url: string,
+    cloudinary_asset_folder: string,
     firstname: string,
     lastname: string,
     ddd: string,
@@ -79,4 +82,10 @@ export type User = {
     email: string,
     password: string,
     role: string,
+}
+
+export type CloudinaryImage = {
+    public_id: string,
+    secure_url: string,
+    asset_folder: string,
 }

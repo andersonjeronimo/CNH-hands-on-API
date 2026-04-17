@@ -11,7 +11,7 @@ async function hasJwt(req: Request, res: Response, next: NextFunction) {
     const { authorization } = req.headers;
     if (!authorization) {
         res.status(200).json({
-            status: 404,
+            status: 401,
             success: false,
             message: "Unauthorized, No auth token found",
         });

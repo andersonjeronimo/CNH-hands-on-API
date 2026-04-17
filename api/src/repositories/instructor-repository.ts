@@ -56,7 +56,7 @@ async function insertInstructor(document: Instructor) {
     return result.insertedId;
 }
 
-async function updateInstructor(document: Instructor) {    
+async function updateInstructor(document: Instructor) {
     let result;
     const client = new MongoClient(uri, {
         serverApi: {
@@ -73,6 +73,9 @@ async function updateInstructor(document: Instructor) {
             $set: {
                 firstname: document.firstname,
                 lastname: document.lastname,
+                cloudinary_public_id: document.cloudinary_public_id,
+                cloudinary_secure_url: document.cloudinary_secure_url,
+                cloudinary_asset_folder: document.cloudinary_asset_folder,
                 ddd: document.ddd,
                 phone: document.phone,
                 cpf: document.cpf,
@@ -90,7 +93,7 @@ async function updateInstructor(document: Instructor) {
         };
 
         result = await collection.updateOne(filter, updateDocument);
-        
+
     } finally {
         await client.close();
     }

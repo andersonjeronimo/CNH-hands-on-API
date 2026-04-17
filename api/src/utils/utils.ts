@@ -49,6 +49,7 @@ export type Instructor = {
     cloudinary_public_id: string,
     cloudinary_secure_url: string,
     cloudinary_asset_folder: string,
+    cloudinary_timestamp: number,
     firstname: string,
     lastname: string,
     ddd: string,
@@ -88,4 +89,5 @@ export type CloudinaryImage = {
     public_id: string,
     secure_url: string,
     asset_folder: string,
+    timestamp: number
 }

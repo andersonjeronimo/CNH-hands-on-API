@@ -16,7 +16,7 @@ async function create(req: Request, res: Response, next: NextFunction) {
         res.status(200).json({
             status: 409,
             success: false,
-            message: "Unauthorized, User already registered",
+            message: "Não autorizado: e-mail já cadastrado por outra conta.",
             timestamp: creationDate.toISOString()
         });
     } else {
@@ -27,7 +27,7 @@ async function create(req: Request, res: Response, next: NextFunction) {
         res.status(200).json({
             status: 201,
             success: true,
-            message: "User created",
+            message: "Conta criada com sucesso.",
             result: insertedId,
             timestamp: creationDate.toISOString()
         });
@@ -41,7 +41,7 @@ async function findUser(req: Request, res: Response, next: NextFunction) {
     res.status(200).json({
         status: result ? 200 : 404,
         success: result ? true : false,
-        message: result ? "User found" : "User not found",
+        message: result ? "Usuário localizado." : "Usuário não localizado.",
         user: result,
         timestamp: creationDate.toISOString()
     });
@@ -57,7 +57,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
             res.status(200).json({
                 status: 401,
                 success: false,
-                message: "Unauthorized, No user matched",
+                message: "Não autorizado: senha incorreta.",
                 timestamp: new Date().toISOString()
             });
         }
@@ -70,7 +70,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
             user: authUser,
             token: token,
             success: true,
-            message: "Authorized, User matched",
+            message: "Autorizado: usuário e senha corretos.",
             timestamp: creationDate.toISOString()
         });
 
@@ -78,7 +78,7 @@ async function auth(req: Request, res: Response, next: NextFunction) {
         res.status(200).json({
             status: 401,
             success: false,
-            message: "Unauthorized, No user matched",
+            message: "Não autorizado: e-mail não cadastrado.",
             timestamp: new Date().toISOString()
         });
     }

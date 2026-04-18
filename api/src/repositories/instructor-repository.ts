@@ -191,18 +191,28 @@ async function findInstructors(filter: Filter) {
     if (filter.category === Category.A) {
         query3 = {
             $match: {
-                $or: [{ category: { $eq: Category.A } }, { category: { $eq: Category.AB } }]
+                $or: [
+                    { category: { $eq: Category.A } },
+                    { category: { $eq: Category.AB } }
+                ]
             }
         }
     } else if (filter.category === Category.B) {
         query3 = {
             $match: {
-                $or: [{ category: { $eq: Category.B } }, { category: { $eq: Category.AB } }]
+                $or: [
+                    { category: { $eq: Category.B } },
+                    { category: { $eq: Category.AB } }
+                ]
             }
         }
     } else if (filter.category === Category.AB) {
         query3 = {
-            $match: { category: { $eq: Category.AB } }
+            $match: [
+                { category: { $eq: Category.A } },
+                { category: { $eq: Category.B } },
+                { category: { $eq: Category.AB } }
+            ]
         }
     }
 

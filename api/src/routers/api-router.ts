@@ -34,6 +34,7 @@ router.get('/instructor/by-cpf/:cpf', auth.hasJwt, auth.isAuthorized, instructor
 router.get('/instructor/by-cnpj/:cnpj', auth.hasJwt, auth.isAuthorized, instructorController.findInstructor);
 /*cloudinary images*/
 router.post('/cloudinary/signature', auth.hasJwt, auth.isAuthorized, cloudinaryController.cloudinarySignature);
+router.post('/cloudinary/update', auth.hasJwt, auth.isAuthorized, cloudinaryController.cloudinaryUpdateFile);
 
 
 export default router;

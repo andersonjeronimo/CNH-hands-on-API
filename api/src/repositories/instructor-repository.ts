@@ -208,11 +208,13 @@ async function findInstructors(filter: Filter) {
         }
     } else if (filter.category === Category.AB) {
         query3 = {
-            $match: [
-                { category: { $eq: Category.A } },
-                { category: { $eq: Category.B } },
-                { category: { $eq: Category.AB } }
-            ]
+            $match: {
+                $or: [
+                    { category: { $eq: Category.A } },
+                    { category: { $eq: Category.B } },
+                    { category: { $eq: Category.AB } }
+                ]
+            }
         }
     }
 

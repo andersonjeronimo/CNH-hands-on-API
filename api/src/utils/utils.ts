@@ -91,3 +91,11 @@ export type CloudinaryImage = {
     asset_folder: string,
     timestamp: number
 }
+
+export type Mail = {
+    from: string,   // sender address
+    to: string,     // list of recipients
+    subject: string,// subject line
+    text: string,   // plain text body
+    html: string,   // HTML body
+}

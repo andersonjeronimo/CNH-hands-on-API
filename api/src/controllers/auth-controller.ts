@@ -89,10 +89,6 @@ async function session(req: Request, res: Response, next: NextFunction) {
     const body = req.body;
 
     const JWT_SECRET = `${process.env.JWT_SECRET}`;
-    const { authorization } = req.headers;
-    const token = authorization ? authorization.split(' ')[1] : '';
-    const { id, exp } = jwt.verify(token, `${process.env.JWT_SECRET}`) as JwtPayload;
-
     if (!JWT_SECRET) {
         res.status(200).json({
             status: 401,
@@ -100,30 +96,45 @@ async function session(req: Request, res: Response, next: NextFunction) {
             message: "Unauthorized, Something went wrong",
             timestamp: new Date().toISOString()
         });
+    }
 
-    } else if (Date.now() / 1000 > exp) {        
-        res.status(200).json({
-            status: 401,
-            success: false,
-            message: "Unauthorized, Token expired",
-            timestamp: new Date().toISOString()
-        });
+    const { authorization } = req.headers;
+    const token = authorization ? authorization.split(' ')[1] : '';
 
-    } else if (id !== body.id) {
-        res.status(200).json({
-            status: 401,
-            success: false,
-            message: "Unauthorized, No user matched",
-            timestamp: new Date().toISOString()
-        });
-    } else {        
-        res.status(200).json({
-            status: 200,
-            success: true,
-            message: "Authorized, Valid token, Token and user matched",
-            timestamp: new Date().toISOString()
-        });
+    try {
+        const { id, exp } = jwt.verify(token, `${process.env.JWT_SECRET}`) as JwtPayload;
+        if (Date.now() / 1000 > exp) {
+            res.status(200).json({
+                status: 401,
+                success: false,
+                message: "Unauthorized, Token expired",
+                timestamp: new Date().toISOString()
+            });
 
+        } else if (id !== body.id) {
+            res.status(200).json({
+                status: 401,
+                success: false,
+                message: "Unauthorized, No user matched",
+                timestamp: new Date().toISOString()
+            });
+        } else {
+            res.status(200).json({
+                status: 200,
+                success: true,
+                message: "Authorized, Valid token, Token and user matched",
+                timestamp: new Date().toISOString()
+            });
+
+        }
+
+    } catch (error) {
+        res.status(200).json({
+            status: 500,
+            success: false,            
+            message: `Unauthorized: ${error}`,
+            timestamp: new Date().toISOString()   
+        });
     }
 
 }

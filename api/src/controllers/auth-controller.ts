@@ -101,7 +101,7 @@ async function session(req: Request, res: Response, next: NextFunction) {
             timestamp: new Date().toISOString()
         });
 
-    } else if (Date.now() / 1000 > exp) {
+    } else if (Date.now() / 1000 > exp) {        
         res.status(200).json({
             status: 401,
             success: false,
@@ -116,8 +116,7 @@ async function session(req: Request, res: Response, next: NextFunction) {
             message: "Unauthorized, No user matched",
             timestamp: new Date().toISOString()
         });
-    } else {
-
+    } else {        
         res.status(200).json({
             status: 200,
             success: true,

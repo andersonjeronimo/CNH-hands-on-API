@@ -77,7 +77,7 @@ async function findInstructor(req: Request, res: Response, next: NextFunction) {
         props.value = cnpj;
     }
 
-    const result = await InstructorRepository.findInstructor(props);        
+    const result = await InstructorRepository.findInstructor(props);
     var creationDate = result ? result._id.getTimestamp() : new Date();
 
     res.status(200).json({
@@ -104,7 +104,7 @@ async function findInstructors(req: Request, res: Response, next: NextFunction) 
         status: result.length ? 200 : 404,
         success: result.length ? true : false,
         message: result.length ? "Instructors found" : "No instructors found",
-        result: result,
+        result: result,        
         timestamp: new Date().toISOString()
     });
 }

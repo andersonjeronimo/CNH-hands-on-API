@@ -158,6 +158,7 @@ async function findInstructor(props: Properties) {
 
 async function findInstructors(filter: Filter) {
     let documents;
+    let pipelines = [];
 
     const query1 = {
         $match: {
@@ -166,30 +167,35 @@ async function findInstructors(filter: Filter) {
         }
     }
 
-    let query2 = {};
+    pipelines.push(query1);
+    
     if (filter.vehicle === Vehicle.Aluno) {
-        query2 = {
+        const query = {
             $match: {
                 $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Ambos } }]
             }
         }
+        pipelines.push(query);
+
     } else if (filter.vehicle === Vehicle.Instrutor) {
-        query2 = {
+        const query = {
             $match: {
                 $or: [{ vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }]
             }
         }
+        pipelines.push(query);
+
     } else if (filter.vehicle === Vehicle.Ambos) {
-        query2 = {
+        const query = {
             $match: {
                 $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }]
             }
         }
+        pipelines.push(query);
     }
-
-    let query3 = {};
+    
     if (filter.category === Category.A) {
-        query3 = {
+        const query = {
             $match: {
                 $or: [
                     { category: { $eq: Category.A } },
@@ -197,42 +203,49 @@ async function findInstructors(filter: Filter) {
                 ]
             }
         }
-    } else if (filter.category === Category.B) {
-        query3 = {
-            $match: {
-                $or: [
-                    { category: { $eq: Category.B } },
-                    { category: { $eq: Category.AB } }
-                ]
-            }
-        }
-    } else if (filter.category === Category.AB) {
-        query3 = {
-            $match: {
-                $or: [
-                    { category: { $eq: Category.A } },
-                    { category: { $eq: Category.B } },
-                    { category: { $eq: Category.AB } }
-                ]
-            }
-        }
-    }
+        pipelines.push(query);
 
-    let query4 = {};
+    } else if (filter.category === Category.B) {
+        const query = {
+            $match: {
+                $or: [
+                    { category: { $eq: Category.B } },
+                    { category: { $eq: Category.AB } }
+                ]
+            }
+        }
+        pipelines.push(query);
+
+    } else if (filter.category === Category.AB) {
+        const query = {
+            $match: {
+                $or: [
+                    { category: { $eq: Category.A } },
+                    { category: { $eq: Category.B } },
+                    { category: { $eq: Category.AB } }
+                ]
+            }
+        }
+        pipelines.push(query);
+    }
+    
     if (filter.callByMicroregion) {
-        query4 = {
+        const query = {
             $match: {
                 $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: filter.cityId } }],
                 microregionId: { $eq: filter.microregionId }
             }
         }
+        pipelines.push(query);
+        
     } else if (!filter.callByMicroregion) {
-        query4 = {
+        const query = {
             $match: {
                 cityId: { $eq: filter.cityId }
                 //$and: [{ callByMicroregion: { $eq: false } }, { microregionId: { $eq: microregionId } }]
             }
         }
+        pipelines.push(query);
     }
 
     const client = new MongoClient(uri, {
@@ -242,24 +255,148 @@ async function findInstructors(filter: Filter) {
             deprecationErrors: true,
         }
     });
+
     try {
         const database = client.db(dbName);
-        const collection = database.collection(collectionName);
-        const pipeline = [];
-        pipeline.push(query1);
-        pipeline.push(query2);
-        pipeline.push(query3);
-        pipeline.push(query4);
+        const collection = database.collection(collectionName);       
 
-        documents = await collection.aggregate(pipeline)
-            .skip(filter.skip)
-            .limit(filter.limit)
-            .toArray();
+        const facet = {
+            $facet: {
+                metadata: [{ $count: "total" }],
+                data: [{ $skip: filter.skip }, { $limit: filter.limit }] // Pagination
+            }
+        };
+
+        pipelines.push(facet);
+        documents = await collection.aggregate(pipelines).toArray();        
+
     } finally {
         await client.close();
     }
+    
     return documents;
 }
+
+//async function findInstructors2(filter: Filter) {
+//    let documents;
+//    let pages: number;
+//
+//    const query1 = {
+//        $match: {
+//            status: { $eq: Status.Ativo },
+//            stateId: { $eq: filter.stateId }
+//        }
+//    }
+//
+//    let query2 = {};
+//    if (filter.vehicle === Vehicle.Aluno) {
+//        query2 = {
+//            $match: {
+//                $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Ambos } }]
+//            }
+//        }
+//    } else if (filter.vehicle === Vehicle.Instrutor) {
+//        query2 = {
+//            $match: {
+//                $or: [{ vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }]
+//            }
+//        }
+//    } else if (filter.vehicle === Vehicle.Ambos) {
+//        query2 = {
+//            $match: {
+//                $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }]
+//            }
+//        }
+//    }
+//
+//    let query3 = {};
+//    if (filter.category === Category.A) {
+//        query3 = {
+//            $match: {
+//                $or: [
+//                    { category: { $eq: Category.A } },
+//                    { category: { $eq: Category.AB } }
+//                ]
+//            }
+//        }
+//    } else if (filter.category === Category.B) {
+//        query3 = {
+//            $match: {
+//                $or: [
+//                    { category: { $eq: Category.B } },
+//                    { category: { $eq: Category.AB } }
+//                ]
+//            }
+//        }
+//    } else if (filter.category === Category.AB) {
+//        query3 = {
+//            $match: {
+//                $or: [
+//                    { category: { $eq: Category.A } },
+//                    { category: { $eq: Category.B } },
+//                    { category: { $eq: Category.AB } }
+//                ]
+//            }
+//        }
+//    }
+//
+//    let query4 = {};
+//    if (filter.callByMicroregion) {
+//        query4 = {
+//            $match: {
+//                $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: filter.cityId } }],
+//                microregionId: { $eq: filter.microregionId }
+//            }
+//        }
+//    } else if (!filter.callByMicroregion) {
+//        query4 = {
+//            $match: {
+//                cityId: { $eq: filter.cityId }
+//                //$and: [{ callByMicroregion: { $eq: false } }, { microregionId: { $eq: microregionId } }]
+//            }
+//        }
+//    }
+//
+//    const client = new MongoClient(uri, {
+//        serverApi: {
+//            version: ServerApiVersion.v1,
+//            strict: true,
+//            deprecationErrors: true,
+//        }
+//    });
+//    try {
+//        const database = client.db(dbName);
+//        const collection = database.collection(collectionName);
+//        const pipeline = [];
+//        pipeline.push(query1);
+//        pipeline.push(query2);
+//        pipeline.push(query3);
+//        pipeline.push(query4);
+//
+//        const facet = {
+//            $facet: {
+//                metadata: [{ $count: "total" }],
+//                data: [{ $skip: filter.skip }, { $limit: filter.limit }] // Pagination
+//            }
+//        };
+//
+//        pipeline.push(facet);
+//
+//        //const total = await collection.aggregate(pipeline).toArray();
+//        //pages = Math.ceil(total.length / filter.limit);
+//
+//        pages = 1;
+//
+//        documents = await collection.aggregate(pipeline).toArray();
+//        //.skip(filter.skip)
+//        //.limit(filter.limit)
+//        //.toArray();
+//    } finally {
+//        await client.close();
+//    }
+//    
+//    return documents;
+//}
 
 //Webhook Mercado Pago+++++++++++++++++++++++++++++++++++++++++++++
 async function updateInstructorStatus(cpf: string, event: string) {

@@ -3,7 +3,7 @@ dotenv.config();
 
 import { Request, Response, NextFunction } from 'express';
 
-import { Mail } from '../utils/utils'
+import { Mail } from '../utils/customTypes'
 import service from '../services/nodemailer-service'
 
 async function sendMail(req: Request, res: Response, next: NextFunction) {

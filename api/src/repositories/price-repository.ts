@@ -3,7 +3,7 @@ dotenv.config();
 
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
-import { Price } from '../utils/utils';
+import { Price } from '../utils/customTypes';
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;

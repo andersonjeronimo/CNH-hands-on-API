@@ -4,7 +4,7 @@ dotenv.config();
 import { Request, Response, NextFunction } from 'express';
 
 import priceRepository from '../repositories/price-repository';
-import { Price } from '../utils/utils';
+import { Price } from '../utils/customTypes';
 
 async function setPrice(req: Request, res: Response, next: NextFunction) {
     const price = req.body as Price;

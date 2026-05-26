@@ -4,7 +4,7 @@ dotenv.config();
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
-import { User } from '../utils/utils';
+import { User } from '../utils/customTypes';
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;

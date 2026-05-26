@@ -3,7 +3,7 @@ dotenv.config();
 
 import { Request, Response, NextFunction } from 'express';
 import InstructorRepository from '../repositories/instructor-repository';
-import { Properties, Filter, Instructor } from "../utils/utils";
+import { Properties, Filter, Instructor } from "../utils/customTypes";
 
 
 async function insertInstructor(req: Request, res: Response, next: NextFunction) {

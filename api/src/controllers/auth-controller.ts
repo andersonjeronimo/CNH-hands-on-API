@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { User, JwtPayload } from "../utils/utils";
+import { User, JwtPayload } from "../utils/customTypes";
 import authRepository from '../repositories/auth-repository';
 
 async function create(req: Request, res: Response, next: NextFunction) {

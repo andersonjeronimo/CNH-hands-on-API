@@ -5,7 +5,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import { ObjectId } from 'mongodb';
 
 //Webhook Mercado Pago
-import { Instructor, Category, Status, Vehicle, Properties, Filter } from "../utils/utils";
+import { Instructor, Category, Status, Vehicle, Properties, Filter } from "../utils/customTypes";
 
 const uri = `${process.env.URI}`;
 const dbName = `${process.env.DATABASE_NAME}`;
@@ -276,127 +276,6 @@ async function findInstructors(filter: Filter) {
     
     return documents;
 }
-
-//async function findInstructors2(filter: Filter) {
-//    let documents;
-//    let pages: number;
-//
-//    const query1 = {
-//        $match: {
-//            status: { $eq: Status.Ativo },
-//            stateId: { $eq: filter.stateId }
-//        }
-//    }
-//
-//    let query2 = {};
-//    if (filter.vehicle === Vehicle.Aluno) {
-//        query2 = {
-//            $match: {
-//                $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Ambos } }]
-//            }
-//        }
-//    } else if (filter.vehicle === Vehicle.Instrutor) {
-//        query2 = {
-//            $match: {
-//                $or: [{ vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }]
-//            }
-//        }
-//    } else if (filter.vehicle === Vehicle.Ambos) {
-//        query2 = {
-//            $match: {
-//                $or: [{ vehicle: { $eq: Vehicle.Aluno } }, { vehicle: { $eq: Vehicle.Instrutor } }, { vehicle: { $eq: Vehicle.Ambos } }]
-//            }
-//        }
-//    }
-//
-//    let query3 = {};
-//    if (filter.category === Category.A) {
-//        query3 = {
-//            $match: {
-//                $or: [
-//                    { category: { $eq: Category.A } },
-//                    { category: { $eq: Category.AB } }
-//                ]
-//            }
-//        }
-//    } else if (filter.category === Category.B) {
-//        query3 = {
-//            $match: {
-//                $or: [
-//                    { category: { $eq: Category.B } },
-//                    { category: { $eq: Category.AB } }
-//                ]
-//            }
-//        }
-//    } else if (filter.category === Category.AB) {
-//        query3 = {
-//            $match: {
-//                $or: [
-//                    { category: { $eq: Category.A } },
-//                    { category: { $eq: Category.B } },
-//                    { category: { $eq: Category.AB } }
-//                ]
-//            }
-//        }
-//    }
-//
-//    let query4 = {};
-//    if (filter.callByMicroregion) {
-//        query4 = {
-//            $match: {
-//                $or: [{ callByMicroregion: { $eq: true } }, { cityId: { $eq: filter.cityId } }],
-//                microregionId: { $eq: filter.microregionId }
-//            }
-//        }
-//    } else if (!filter.callByMicroregion) {
-//        query4 = {
-//            $match: {
-//                cityId: { $eq: filter.cityId }
-//                //$and: [{ callByMicroregion: { $eq: false } }, { microregionId: { $eq: microregionId } }]
-//            }
-//        }
-//    }
-//
-//    const client = new MongoClient(uri, {
-//        serverApi: {
-//            version: ServerApiVersion.v1,
-//            strict: true,
-//            deprecationErrors: true,
-//        }
-//    });
-//    try {
-//        const database = client.db(dbName);
-//        const collection = database.collection(collectionName);
-//        const pipeline = [];
-//        pipeline.push(query1);
-//        pipeline.push(query2);
-//        pipeline.push(query3);
-//        pipeline.push(query4);
-//
-//        const facet = {
-//            $facet: {
-//                metadata: [{ $count: "total" }],
-//                data: [{ $skip: filter.skip }, { $limit: filter.limit }] // Pagination
-//            }
-//        };
-//
-//        pipeline.push(facet);
-//
-//        //const total = await collection.aggregate(pipeline).toArray();
-//        //pages = Math.ceil(total.length / filter.limit);
-//
-//        pages = 1;
-//
-//        documents = await collection.aggregate(pipeline).toArray();
-//        //.skip(filter.skip)
-//        //.limit(filter.limit)
-//        //.toArray();
-//    } finally {
-//        await client.close();
-//    }
-//    
-//    return documents;
-//}
 
 //Webhook Mercado Pago+++++++++++++++++++++++++++++++++++++++++++++
 async function updateInstructorStatus(cpf: string, event: string) {

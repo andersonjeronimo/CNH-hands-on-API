@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 import authRepository from '../repositories/auth-repository';
 import jwt from "jsonwebtoken";
 
-import { JwtPayload } from '../utils/utils';
+import { JwtPayload } from '../utils/customTypes';
 
 async function hasJwt(req: Request, res: Response, next: NextFunction) {
     const { authorization } = req.headers;

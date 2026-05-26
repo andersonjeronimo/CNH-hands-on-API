@@ -4,7 +4,7 @@ dotenv.config();
 //const cloudinary = require('cloudinary').v2;
 import { v2 as cloudinary } from 'cloudinary';
 
-import { CloudinaryImage } from '../utils/utils'
+import { CloudinaryImage } from '../utils/customTypes'
 
 cloudinary.config({
     cloud_name: `${process.env.CLOUDINARY_NAME}`,

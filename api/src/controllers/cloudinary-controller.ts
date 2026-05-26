@@ -3,7 +3,7 @@ dotenv.config();
 
 import { Request, Response, NextFunction } from 'express';
 
-import { CloudinaryImage } from '../utils/utils'
+import { CloudinaryImage } from '../utils/customTypes'
 import service from '../services/cloudinary-service'
 
 async function cloudinarySignature(req: Request, res: Response, next: NextFunction) {
